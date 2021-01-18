@@ -6,6 +6,7 @@ import PostRouter from './Posts';
 const router = Router();
 
 // Add sub-routes
+router.use('/users', UserRouter);
 router.use('/posts', PostRouter);
 
 // Export the base-router
