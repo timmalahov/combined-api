@@ -1,58 +1,49 @@
 import StatusCodes from 'http-status-codes';
-import { Request, Response, Router } from 'express';
+import {NextFunction, Request, Response, Router} from 'express';
 
-import UserDao from '@daos/User/UserDao.mock';
-import { UserQueryParams } from "@shared/QueryParams/UserQueryParams";
-import {BaseResponse, ListResponse} from "@shared/BaseResponse";
-import { size } from "lodash";
+import UserDao from '@daos/User/UserDao';
+import {UserQueryParams} from "@shared/QueryParams/UserQueryParams";
+import {ListResponse} from "@shared/BaseResponse";
+import UserService from "../services/Users";
+import {UserDaoResponse} from "@daos/User/UserDaoResponse";
 
 const router = Router();
 const usersDao = new UserDao();
-const { INTERNAL_SERVER_ERROR, NOT_FOUND, OK } = StatusCodes;
-
+const userService = new UserService(usersDao);
+const {OK} = StatusCodes;
 
 
 /******************************************************************************
  *                      Get All Users - "GET /api/users/"
  ******************************************************************************/
 
-router.get('/', async (req: Request, res: Response) => {
-
-    if (size(Object.keys(req.query))) {
-        try {
-            const users = await usersDao.getUsersByQuery(new UserQueryParams(req.query));
-            return res.status(OK).json(new ListResponse(users, size(users)));
-        } catch (e) {
-            return res.status(INTERNAL_SERVER_ERROR).json(e).end();
-        }
-    }
-
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const users = await usersDao.getAll();
-        return res.status(OK).json(new ListResponse(users, size(users)));
+        const users: UserDaoResponse =
+            await userService.getUsersByQuery(new UserQueryParams(req.query));
+        return res.status(OK).json(new ListResponse(users.users, users.totalCount));
     } catch (e) {
-        return res.status(NOT_FOUND).end();
+        next(e)
     }
 });
-
 
 
 /******************************************************************************
  *                      Get User by id - "GET /api/users/:id"
  ******************************************************************************/
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 
-    const { id } = req.params;
+    const {id} = req.params;
 
     try {
-        const user = await usersDao.getUserById(Number(id));
-        return res.status(OK).json(new BaseResponse(user));
+        const users: UserDaoResponse =
+            await userService.getUserById(Number(id));
+        return res.status(OK).json(new ListResponse(users.users, users.totalCount));
     } catch (e) {
-        return res.status(NOT_FOUND).end();
+        next(e)
     }
 });
-
 
 
 /******************************************************************************
