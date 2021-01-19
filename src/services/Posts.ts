@@ -1,4 +1,3 @@
-import {IUserQueryParams} from "@shared/QueryParams/UserQueryParams";
 import {IPostDao} from "@daos/Post/PostDao";
 import {IPostDaoResponse} from "@daos/Post/PostDaoResponse";
 import {IPostQueryParams} from "@shared/QueryParams/PostQueryParams";
@@ -19,16 +18,14 @@ class PostService<T extends IPostDao> implements IPostService {
     public async getPostsByQuery(query: IPostQueryParams): Promise<IPostDaoResponse> {
         if (query.hasValues?.()) {
             try {
-                const response = await this.postDao.getPostsByQuery(query);
-                return response
+                return await this.postDao.getPostsByQuery(query);
             } catch (e) {
                 throw new Error();
             }
         }
 
         try {
-            const response = await this.postDao.getAll();
-            return response
+            return await this.postDao.getAll();
         } catch (e) {
             throw new Error(e)
         }
@@ -36,8 +33,7 @@ class PostService<T extends IPostDao> implements IPostService {
 
     public async getPostById(id: number): Promise<IPostDaoResponse> {
         try {
-            const response = await this.postDao.getPostById(id);
-            return response
+            return await this.postDao.getPostById(id);
         } catch (e) {
             throw new Error(e)
         }
