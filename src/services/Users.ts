@@ -18,16 +18,14 @@ class UserService<T extends IUserDao> implements IUserService {
     public async getUsersByQuery(query: IUserQueryParams): Promise<IUserDaoResponse> {
         if (query.hasValues?.()) {
             try {
-                const response = await this.userDao.getUsersByQuery(query);
-                return response
+                return await this.userDao.getUsersByQuery(query);
             } catch (e) {
                 throw new Error();
             }
         }
 
         try {
-            const response = await this.userDao.getAll();
-            return response
+            return await this.userDao.getAll();
         } catch (e) {
             throw new Error(e)
         }
@@ -35,8 +33,7 @@ class UserService<T extends IUserDao> implements IUserService {
 
     public async getUserById(id: number): Promise<IUserDaoResponse> {
         try {
-            const response = await this.userDao.getUserById(id);
-            return response
+            return await this.userDao.getUserById(id);
         } catch (e) {
             throw new Error(e)
         }

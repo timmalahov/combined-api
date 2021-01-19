@@ -34,8 +34,7 @@ class UserDao implements IUserDao {
                 users.push(...usersData);
             }
 
-            const result = users.map(userData => new User(userData));
-            return result;
+            return users.map(userData => new User(userData));
         } catch (e) {
             throw new Error();
         }
@@ -55,8 +54,7 @@ class UserDao implements IUserDao {
             const response = await axios.get(`https://reqres.in/api/users/${id}`);
             const userData: IUser = await response.data;
             const user = new User(get(userData, 'data'));
-            const userResponse = new UserDaoResponse([user])
-            return userResponse;
+            return new UserDaoResponse([user]);
         } catch (e) {
             throw new Error(e);
         }
@@ -67,8 +65,7 @@ class UserDao implements IUserDao {
 
         try {
             if (id) {
-                const user = await this.getUserById(id);
-                return user;
+                return await this.getUserById(id);
             }
 
             const users: IUser[] = await this.getAllUsers();
@@ -79,7 +76,7 @@ class UserDao implements IUserDao {
                         .filter(user =>
                             `${user.first_name.toLowerCase()} ${user.last_name.toLowerCase()}`
                                 .includes(nameString.toLowerCase()))
-                    : users
+                    : users;
 
             const resultUsers: User[] = filteredUsers.map(userData => new User(userData));
 
