@@ -1,8 +1,9 @@
-import { IPaginationQueryParams } from "@shared/QueryParams/commonParams";
+import {IPaginationQueryParams} from "@shared/QueryParams/commonParams";
 
 export interface IUserQueryParams extends IPaginationQueryParams {
     name?: string,
     id?: number,
+    hasValues?: () => boolean
 }
 
 export class UserQueryParams implements IUserQueryParams {
@@ -17,5 +18,9 @@ export class UserQueryParams implements IUserQueryParams {
         this.id = params.id;
         this.offset = Number(params.offset) || 0;
         this.limit = Number(params.limit) || 0;
+    }
+
+    public hasValues = (): boolean => {
+        return Boolean(this.name || this.id || this.offset || this.limit);
     }
 }

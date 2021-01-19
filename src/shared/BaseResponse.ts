@@ -14,9 +14,9 @@ export class BaseResponse implements IBaseResponse {
 export class ListResponse extends BaseResponse {
 
     public value: any[];
-    public totalCount: number;
+    public totalCount: number | undefined;
 
-    constructor(value: any[], totalCount: number) {
+    constructor(value: any[], totalCount: number | undefined) {
         super(value)
         this.value = value;
         this.totalCount = totalCount;
